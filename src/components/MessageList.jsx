@@ -20,24 +20,22 @@ export default function MessageList({ messages, currentUsername }) {
         <div className="message-list">
             {messages.length === 0 ? (
                 <div className="no-messages">
-                    <p>Nenhuma mensagem ainda.</p>
-                    <p>Seja o primeiro a enviar uma mensagem!</p>
+                    <p>No messages yet.</p>
+                    <p>Be the first to send a message!</p>
                 </div>
             ) : (
                 messages.map((message) => (
-                    <div key={message.id}
-                        className={`message ${message.username === currentUsername ? 'own-message' : ''}`}
-                        style={{ display: message.content?.length === 0 ? 'none' : 'flex' }}
+                    <div key={message.id ?? crypto.randomUUID()}
+                        className={`message
+                            ${message.username === currentUsername ? 'own-message' : ''}
+                            ${!message.id ? 'pending-message' : ''}`}
                     >
                         <div className="message-header">
                             <span className="message-username">{message.username}</span>
-                            <span className="message-time">
-                                {formatTime(message.created_at)}
-                            </span>
+                            <span className="message-time">{formatTime(message.created_at)}</span>
                         </div>
-
                         <div className="message-content">
-                            <p>{message.content}</p>
+                            <p>{message.id ? message.content : 'Sending...'}</p>
                         </div>
                     </div>
                 ))

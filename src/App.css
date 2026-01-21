@@ -368,7 +368,16 @@ body {
     width: fit-content;
 }
 
-.message.own-message {
+.message {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    max-width: 70%;
+    width: fit-content;
+}
+
+.message.own-message,
+.message.pending-message {
     align-self: flex-end;
     align-items: end;
 }
@@ -379,6 +388,10 @@ body {
     align-items: center;
     font-size: 0.75rem;
     color: var(--text-secondary);
+}
+
+.message.pending-message .message-header {
+    display: none;
 }
 
 .message-username {
