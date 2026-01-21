@@ -272,6 +272,7 @@ body {
     display: flex;
     flex-direction: column;
     background: var(--bg);
+    max-height: -webkit-fill-available;
 }
 
 .chat-room.empty {

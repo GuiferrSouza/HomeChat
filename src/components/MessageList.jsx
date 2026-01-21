@@ -20,30 +20,28 @@ export default function MessageList({ messages, currentUsername }) {
         <div className="message-list">
             {messages.length === 0 ? (
                 <div className="no-messages">
-                    <p>No messages yet.</p>
-                    <p>Be the first to send a message!</p>
+                    <p>Nenhuma mensagem ainda.</p>
+                    <p>Seja o primeiro a enviar uma mensagem!</p>
                 </div>
             ) : (
                 messages.map((message) => (
-                        <div key={message.id}
-                            className={`message ${message.username === currentUsername ? 'own-message' : ''}`}
-                        >
-                            <div className="message-header">
-                                <span className="message-username">
-                                    {message.username}
-                                </span>
-                                <span className="message-time">
-                                    {formatTime(message.created_at)}
-                                </span>
-                            </div>
-
-                            <div className="message-content">
-                                <p>{message.content}</p>
-                            </div>
+                    <div key={message.id}
+                        className={`message ${message.username === currentUsername ? 'own-message' : ''}`}
+                        style={{ display: message.content?.length === 0 ? 'none' : 'flex' }}
+                    >
+                        <div className="message-header">
+                            <span className="message-username">{message.username}</span>
+                            <span className="message-time">
+                                {formatTime(message.createdAt)}
+                            </span>
                         </div>
-                    ))
-            )}
 
+                        <div className="message-content">
+                            <p>{message.content}</p>
+                        </div>
+                    </div>
+                ))
+            )}
             <div ref={messagesEndRef} />
         </div>
     );
