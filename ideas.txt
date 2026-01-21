@@ -1,0 +1,16 @@
+Inside:
+    Living Room
+    Kitchen
+    Bedroom
+    Bathroom
+    Dining Room
+    Office
+    Hallway
+
+Outside:
+    Backyard
+    Front Yard
+    Garden
+    Garage
+    Balcony
+    Patio
