@@ -9,6 +9,7 @@ function App() {
     const [selectedRoom, setSelectedRoom] = useState(null);
     const [username, setUsername] = useState('');
     const [isUsernameSet, setIsUsernameSet] = useState(false);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
     const loadRooms = async () => {
         try {
@@ -61,17 +62,28 @@ function App() {
 
     return (
         <div className="app">
-            <aside className="sidebar">
+            <aside className={`sidebar ${isSidebarOpen ? 'open' : 'closed'}`}>
                 <div className="user-info">
                     <span>👤 {username}</span>
                     <button onClick={() => setIsUsernameSet(false)} className="logout-btn">
                         Exit
                     </button>
                 </div>
-                <RoomList rooms={rooms} selectedRoom={selectedRoom} onSelectRoom={setSelectedRoom} />
+                <RoomList
+                    rooms={rooms}
+                    selectedRoom={selectedRoom}
+                    onSelectRoom={(room) => {
+                        setSelectedRoom(room);
+                        setIsSidebarOpen(false);
+                    }}
+                />
             </aside>
             <main className="main-content">
-                <ChatRoom room={selectedRoom} username={username} />
+                <ChatRoom
+                    room={selectedRoom}
+                    username={username}
+                    onOpenRooms={() => setIsSidebarOpen(true)}
+                />
             </main>
         </div>
     );

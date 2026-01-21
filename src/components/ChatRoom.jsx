@@ -6,7 +6,7 @@ import { RefreshCw } from 'lucide-react';
 
 const MemoizedMessageInput = memo(MessageInput);
 
-export default function ChatRoom({ room, username }) {
+export default function ChatRoom({ room, username, onOpenRooms }) {
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -74,6 +74,9 @@ export default function ChatRoom({ room, username }) {
     return (
         <div className="chat-room">
             <div className="chat-header">
+                <button className="open-rooms-btn" onClick={onOpenRooms}>
+                    Rooms
+                </button>
                 <h2>{room.name}</h2>
                 <button onClick={() => loadMessages()} disabled={loading} className="refresh-btn">
                     <RefreshCw size={20} className={loading ? 'spinning' : ''} />
