@@ -25,19 +25,25 @@ export default function MessageList({ messages, currentUsername }) {
                 </div>
             ) : (
                 messages.map((message) => (
-                    <div key={message.id}
-                        className={`message ${message.username === currentUsername ? 'own-message' : ''}`}
-                    >
-                        <div className="message-header">
-                            <span className="message-username">{message.username}</span>
-                            <span className="message-time">{formatTime(message.created_at)}</span>
+                        <div key={message.id}
+                            className={`message ${message.username === currentUsername ? 'own-message' : ''}`}
+                        >
+                            <div className="message-header">
+                                <span className="message-username">
+                                    {message.username}
+                                </span>
+                                <span className="message-time">
+                                    {formatTime(message.created_at)}
+                                </span>
+                            </div>
+
+                            <div className="message-content">
+                                <p>{message.content}</p>
+                            </div>
                         </div>
-                        <div className="message-content">
-                            <p>{message.content}</p>
-                        </div>
-                    </div>
-                ))
+                    ))
             )}
+
             <div ref={messagesEndRef} />
         </div>
     );
