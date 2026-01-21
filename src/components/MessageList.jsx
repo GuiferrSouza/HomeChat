@@ -32,7 +32,7 @@ export default function MessageList({ messages, currentUsername }) {
                         <div className="message-header">
                             <span className="message-username">{message.username}</span>
                             <span className="message-time">
-                                {formatTime(message.createdAt)}
+                                {formatTime(message.created_at)}
                             </span>
                         </div>
 
