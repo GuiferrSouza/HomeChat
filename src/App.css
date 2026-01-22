@@ -98,7 +98,7 @@ body {
 
 .app {
     display: flex;
-    height: 100vh;
+    height: 100dvh;
 }
 
 .sidebar {
@@ -275,7 +275,6 @@ body {
     background: var(--bg);
     max-height: -webkit-fill-available;
     min-height: 0;
-    overflow: hidden;
 }
 
 .chat-room.empty {
@@ -348,7 +347,6 @@ body {
     flex: 1;
     overflow-y: auto;
     padding: 1rem;
-    margin-bottom: env(safe-area-inset-bottom);
     display: flex;
     flex-direction: column;
     -webkit-overflow-scrolling: touch;
@@ -424,7 +422,6 @@ body {
 
 .message-input {
     padding: 1rem;
-    padding-bottom: calc(1rem + env(safe-area-inset-bottom));
     border-top: 1px solid var(--border);
     background: var(--bg-secondary);
     display: flex;
