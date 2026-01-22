@@ -1,54 +1,48 @@
-import axios from 'axios';
+import { createClient } from '@supabase/supabase-js';
 
-const API_URL = import.meta.env.VITE_API_URL;
-const ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const SUPABASE_URL = import.meta.env.VITE_API_URL;
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-const api = axios.create({
-  baseURL: API_URL,
-  headers: {
-    'Content-Type': 'application/json',
-    apikey: ANON_KEY,
-    Authorization: `Bearer ${ANON_KEY}`,
-  },
-});
+export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 export const getRooms = async () => {
-  const { data } = await api.get('/rooms');
+  const { data, error } = await supabase
+    .from('rooms')
+    .select('*')
+    .order('id', { ascending: true });
+  
+  if (error) throw error;
   return data;
-};
-
-export const getRoom = async (id) => {
-  const { data } = await api.get(`/rooms?id=eq.${id}`);
-  return data[0];
 };
 
 export const createRoom = async (name) => {
-  const { data } = await api.post('/rooms', { name });
-  return data;
-};
-
-export const deleteRoom = async (id) => {
-  await api.delete(`/rooms?id=eq.${id}`);
+  const { data, error } = await supabase
+    .from('rooms')
+    .insert([{ name }])
+    .select();
+  
+  if (error) throw error;
+  return data[0];
 };
 
 export const getMessages = async (roomId, limit = 50) => {
-  const { data } = await api.get(
-    `/messages?room_id=eq.${roomId}&order=created_at.desc&limit=${limit}`
-  );
+  const { data, error } = await supabase
+    .from('messages')
+    .select('*')
+    .eq('room_id', roomId)
+    .order('created_at', { ascending: true })
+    .limit(limit);
+
+  if (error) throw error;
   return data;
 };
 
 export const createMessage = async (roomId, username, content) => {
-  const { data } = await api.post('/messages', {
-    room_id: roomId,
-    username,
-    content,
-  });
-  return data;
+  const { data, error } = await supabase
+    .from('messages')
+    .insert([{ room_id: roomId, username, content }])
+    .select();
+  
+  if (error) throw error;
+  return data[0];
 };
-
-export const deleteMessage = async (roomId, messageId) => {
-  await api.delete(`/messages?id=eq.${messageId}&room_id=eq.${roomId}`);
-};
-
-export default api;
