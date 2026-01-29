@@ -1,92 +1,60 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useRoomsData } from './hooks/useRoomsData';
+import UsernameScreen from './components/UsernameScreen';
 import RoomList from './components/RoomList';
 import ChatRoom from './components/ChatRoom';
-import { getRooms } from './services/api';
+import ErrorMessage from './components/ErrorMessage';
+import Loading from './components/Loading';
+import UserInfo from './components/UserInfo';
 import './App.css';
 
-function App() {
-    const [rooms, setRooms] = useState([]);
+export default function App() {
+    const { data, loading, error } = useRoomsData();
     const [selectedRoom, setSelectedRoom] = useState(null);
     const [username, setUsername] = useState('');
     const [isUsernameSet, setIsUsernameSet] = useState(false);
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
-    const loadRooms = async () => {
-        try {
-            const data = await getRooms();
-            setRooms(data);
-        } catch (err) {
-            console.error('Error loading rooms:', err);
-            alert('Error connecting to the server.');
-        }
+    const handleUsernameSubmit = (submittedUsername) => {
+        setUsername(submittedUsername);
+        setIsUsernameSet(true);
     };
 
-    useEffect(() => {
-        if (isUsernameSet) {
-            loadRooms();
-        }
-    }, [isUsernameSet]);
+    const handleLogout = () => {
+        setUsername('');
+        setIsUsernameSet(false);
+        setSelectedRoom(null);
+    };
 
-    const handleUsernameSubmit = (e) => {
-        e.preventDefault();
-        if (username.trim().length >= 3) {
-            setIsUsernameSet(true);
-        }
+    const handleSelectRoom = (room) => {
+        setSelectedRoom(room);
+        setIsSidebarOpen(false);
     };
 
     if (!isUsernameSet) {
-        return (
-            <div className="username-screen">
-                <div className="username-container">
-                    <h1>HomeChat</h1>
-                    <p>Welcome! Choose your username to get started.</p>
-                    <form onSubmit={handleUsernameSubmit}>
-                        <input
-                            type="text"
-                            placeholder="Your username"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            maxLength={50}
-                            minLength={3}
-                            required
-                            autoFocus
-                        />
-                        <button type="submit" disabled={username.trim().length < 3}>
-                            Enter
-                        </button>
-                    </form>
-                </div>
-            </div>
-        );
+        return <UsernameScreen onSubmit={handleUsernameSubmit} />;
+    }
+
+    if (error) {
+        return <ErrorMessage
+            message="Error loading data"
+            onRetry={() => window.location.reload()}
+        />;
     }
 
     return (
         <div className="app">
             <aside className={`sidebar ${isSidebarOpen ? 'open' : 'closed'}`}>
-                <div className="user-info">
-                    <span>👤 {username}</span>
-                    <button onClick={() => setIsUsernameSet(false)} className="logout-btn">
-                        Exit
-                    </button>
-                </div>
-                <RoomList
-                    rooms={rooms}
-                    selectedRoom={selectedRoom}
-                    onSelectRoom={(room) => {
-                        setSelectedRoom(room);
-                        setIsSidebarOpen(false);
-                    }}
-                />
+                <UserInfo username={username} onLogout={handleLogout} />
+                {loading ? (
+                    <Loading />
+                ) : (
+                    <RoomList rooms={data} selectedRoom={selectedRoom} onSelectRoom={handleSelectRoom} />
+                )}
             </aside>
             <main className="main-content">
-                <ChatRoom
-                    room={selectedRoom}
-                    username={username}
-                    onOpenRooms={() => setIsSidebarOpen(true)}
-                />
+                <ChatRoom room={selectedRoom} username={username} onOpenRooms={() => setIsSidebarOpen(true)} />
             </main>
         </div>
     );
 }
-
-export default App;

@@ -12,8 +12,7 @@ export default function RoomList({ rooms, selectedRoom, onSelectRoom }) {
                     <p className="no-rooms">No rooms available</p>
                 ) : (
                     rooms.map((room) => (
-                        <div
-                            key={room.id}
+                        <div key={room.id}
                             className={`room-item ${selectedRoom?.id === room.id ? 'active' : ''}`}
                             onClick={() => onSelectRoom(room)}
                         >
