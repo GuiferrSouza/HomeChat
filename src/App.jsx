@@ -1,12 +1,15 @@
-import { useState } from 'react';
-import { useRoomsData } from './hooks/useRoomsData';
+import { useEffect, useState } from 'react';
+import './App.css';
+
 import UsernameScreen from './components/UsernameScreen';
 import RoomList from './components/RoomList';
 import ChatRoom from './components/ChatRoom';
 import ErrorMessage from './components/ErrorMessage';
 import Loading from './components/Loading';
 import UserInfo from './components/UserInfo';
-import './App.css';
+
+import { useRoomsData } from './hooks/useRoomsData';
+import { registerAccess } from './services/supabase';
 
 export default function App() {
     const { data, loading, error } = useRoomsData();
@@ -14,6 +17,8 @@ export default function App() {
     const [username, setUsername] = useState('');
     const [isUsernameSet, setIsUsernameSet] = useState(false);
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
+    useEffect(() => registerAccess(), []);
 
     const handleUsernameSubmit = (submittedUsername) => {
         setUsername(submittedUsername);
@@ -31,16 +36,8 @@ export default function App() {
         setIsSidebarOpen(false);
     };
 
-    if (!isUsernameSet) {
-        return <UsernameScreen onSubmit={handleUsernameSubmit} />;
-    }
-
-    if (error) {
-        return <ErrorMessage
-            message="Error loading data"
-            onRetry={() => window.location.reload()}
-        />;
-    }
+    if (!isUsernameSet) return <UsernameScreen onSubmit={handleUsernameSubmit} />;
+    if (error) return <ErrorMessage message="Error loading data" onRetry={() => window.location.reload()}/>;
 
     return (
         <div className="app">
