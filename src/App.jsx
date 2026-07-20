@@ -9,7 +9,9 @@ import Loading from './components/Loading';
 import UserInfo from './components/UserInfo';
 
 import { useRoomsData } from './hooks/useRoomsData';
+import { getAccessLocation } from './services/access';
 import { registerAccess } from './services/supabase';
+import { notifyAccess } from './services/telegram';
 
 export default function App() {
     const { data, loading, error } = useRoomsData();
@@ -18,7 +20,14 @@ export default function App() {
     const [isUsernameSet, setIsUsernameSet] = useState(false);
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
-    useEffect(() => registerAccess(), []);
+    useEffect(() => {
+        const handleAccess = async () => {
+            const location = await getAccessLocation();
+            await registerAccess(location);
+            await notifyAccess(location);
+        };
+        handleAccess();
+    }, []);
 
     const handleUsernameSubmit = (submittedUsername) => {
         setUsername(submittedUsername);
@@ -37,7 +46,7 @@ export default function App() {
     };
 
     if (!isUsernameSet) return <UsernameScreen onSubmit={handleUsernameSubmit} />;
-    if (error) return <ErrorMessage message="Error loading data" onRetry={() => window.location.reload()}/>;
+    if (error) return <ErrorMessage message="Error loading data" onRetry={() => window.location.reload()} />;
 
     return (
         <div className="app">
